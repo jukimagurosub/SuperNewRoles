@@ -130,7 +130,13 @@ namespace SuperNewRoles.CustomRPC
         UncheckedSetVanilaRole,
         SetMadKiller,
         SetCustomSabotage,
-        UseStuntmanCount
+        UseStuntmanCount,
+        PlaySound,
+        PlaySoundRPC,
+    }
+    public enum Sounds
+    {
+        KillSound
     }
     public static class RPCProcedure
     {
@@ -610,6 +616,29 @@ namespace SuperNewRoles.CustomRPC
         {
             static void Postfix()
             {
+            }
+        }
+        public static void PlaySoundRPC(byte PlayerID, Sounds sound)
+        {
+            if (AmongUsClient.Instance.AmHost)
+            { 
+               PlaySound(PlayerID, sound);
+            }
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaySound, Hazel.SendOption.Reliable, -1);
+            writer.Write(PlayerID);
+            writer.Write((byte)sound);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
+        public static void PlaySound(byte playerID, Sounds sound)
+        {
+            if (PlayerControl.LocalPlayer.PlayerId == playerID)
+            {
+                switch (sound)
+                {
+                    case Sounds.KillSound:
+                        SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false, 0.8f);
+                        break;
+                }
             }
         }
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
