@@ -83,7 +83,8 @@ namespace SuperNewRoles.CustomRPC
         SideKiller,
         MadKiller,
         Survivor,
-        MadMayor
+        MadMayor,
+        BlueTooth,
         //RoleId
     }
 
@@ -133,6 +134,7 @@ namespace SuperNewRoles.CustomRPC
         UseStuntmanCount,
         PlaySound,
         PlaySoundRPC,
+        Sounds,
     }
     public enum Sounds
     {

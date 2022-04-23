@@ -7,11 +7,12 @@ using Hazel;
 using SuperNewRoles.Helpers;
 using SuperNewRoles.Patch;
 using UnityEngine;
+using SuperNewRoles.CustomRPC;
 
 namespace SuperNewRoles.Roles
 {
     class BlueTooth
     {
-        CustomRPC.PlaySoundRPC(__instance(この__instanceはPlayerControl __instance).PlayerId,Sounds.KillSound);
+        CustomRPC.PlaySoundRPC.PlayerId.Sounds.KillSound
     }  
 } 
