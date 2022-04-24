@@ -1326,6 +1326,15 @@ namespace SuperNewRoles.Roles
                 ImpostorCheckTask = (int)(AllTask * (int.Parse(CustomOptions.MadMayorCheckImpostorTask.getString().Replace("%", "")) / 100f));
             }
         }
+        public static class BlueTooth
+        {
+            public static List<PlayerControl> BlueToothPlayer;
+            public static Color32 color = ImpostorRed;
+            public static void ClearAndReload()
+            {
+                BlueToothPlayer = new List<PlayerControl>();
+            }
+        }
         //新ロールクラス
         public static class Quarreled
         {

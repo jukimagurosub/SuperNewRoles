@@ -134,12 +134,8 @@ namespace SuperNewRoles.CustomRPC
         UseStuntmanCount,
         PlaySound,
         PlaySoundRPC,
-        Sounds,
     }
-    public enum Sounds
-    {
-        KillSound
-    }
+
     public static class RPCProcedure
     {
         public static void UseStuntmanCount(byte playerid)
@@ -620,28 +616,29 @@ namespace SuperNewRoles.CustomRPC
             {
             }
         }
-        public static void PlaySoundRPC(byte PlayerID, Sounds sound)
+        public static void PlaySoundRPC(byte PlayerID, Sound Sound)
         {
             if (AmongUsClient.Instance.AmHost)
-            { 
-               PlaySound(PlayerID, sound);
-            }
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaySound, Hazel.SendOption.Reliable, -1);
-            writer.Write(PlayerID);
-            writer.Write((byte)sound);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-        }
-        public static void PlaySound(byte playerID, Sounds sound)
-        {
-            if (PlayerControl.LocalPlayer.PlayerId == playerID)
             {
-                switch (sound)
+                PlaySoundRPC(PlayerID, Sound);
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaySound, Hazel.SendOption.Reliable, -1);
+                writer.Write(PlayerID);
+                writer.Write((byte)Sound);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
+            if (PlayerControl.LocalPlayer.PlayerId == PlayerID)
+            {
+                switch (Sound)
                 {
-                    case Sounds.KillSound:
+                    case Sound.KillSound:
                         SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false, 0.8f);
                         break;
                 }
             }
+        }  
+        public enum Sound
+        {
+            KillSound
         }
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
         class RPCHandlerPatch
@@ -797,13 +794,18 @@ namespace SuperNewRoles.CustomRPC
                         __instance.SetColor(reader.ReadByte());
                         break;
                     case (byte)CustomRPC.UncheckedSetVanilaRole:
-                        UncheckedSetVanilaRole(reader.ReadByte(),reader.ReadByte());
+                        UncheckedSetVanilaRole(reader.ReadByte(), reader.ReadByte());
                         break;
                     case (byte)CustomRPC.SetMadKiller:
                         SetMadKiller(reader.ReadByte(), reader.ReadByte());
                         break;
                     case (byte)CustomRPC.SetCustomSabotage:
-                        SabotageManager.SetSabotage(ModHelpers.playerById(reader.ReadByte()),(SabotageManager.CustomSabotage)reader.ReadByte(),reader.ReadBoolean());
+                        SabotageManager.SetSabotage(ModHelpers.playerById(reader.ReadByte()), (SabotageManager.CustomSabotage)reader.ReadByte(), reader.ReadBoolean());
+                        break;
+                    case (byte)CustomRPC.PlaySoundRPC:
+                        byte playerID = reader.ReadByte();
+                        Sound sound = (Sound)reader.ReadByte();
+                        RPCProcedure.PlaySoundRPC(playerID, sound);
                         break;
                 }
             }
