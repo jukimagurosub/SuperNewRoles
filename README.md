@@ -1,3 +1,4 @@
+偽レイラー働け
 # SuperNewRoles
 ![SNRImage](./images/SNRImage.png)
 
