@@ -426,6 +426,9 @@ namespace SuperNewRoles
                 case (CustomRPC.RoleId.MadHawk):
                     Roles.RoleClass.MadHawk.MadHawkPlayer.Add(player);
                     break;
+                case (CustomRPC.RoleId.EvilHacker):
+                    Roles.RoleClass.EvilHacker.EvilHackerPlayer.Add(player);
+                    break;
                 //ロールアド
                 default:
                     SuperNewRolesPlugin.Logger.LogError("setRole: no method found for role type {role}");
@@ -636,7 +639,6 @@ namespace SuperNewRoles
                 case (CustomRPC.RoleId.MadHawk):
                     Roles.RoleClass.MadHawk.MadHawkPlayer.RemoveAll(ClearRemove);
                     break;
-                //ロールリモベ
                 case (CustomRPC.RoleId.NiceHawk):
                     Roles.RoleClass.NiceHawk.NiceHawkPlayer.RemoveAll(ClearRemove);
                     break;
@@ -646,7 +648,10 @@ namespace SuperNewRoles
                 case (CustomRPC.RoleId.MadJester):
                     Roles.RoleClass.MadJester.MadJesterPlayer.RemoveAll(ClearRemove);
                     break;
-                //ロールリモベ
+                case (CustomRPC.RoleId.EvilHacker):
+                    Roles.RoleClass.EvilHacker.EvilHackerPlayer.RemoveAll(ClearRemove);
+                    break;
+                    //ロールリモベ
             }
             ChacheManager.ResetMyRoleChache();
         }
@@ -698,7 +703,7 @@ namespace SuperNewRoles
                 case (RoleId.Workperson):
                     IsTaskClear = true;
                     break;
-                    case (RoleId.truelover):
+                case (RoleId.truelover):
                     IsTaskClear = true;
                     break; 
                 case (RoleId.Amnesiac):
@@ -1167,6 +1172,10 @@ namespace SuperNewRoles
                 {
                 return CustomRPC.RoleId.MadJester;
                 }
+            else if (Roles.RoleClass.EvilHacker.EvilHackerPlayer.IsCheckListPlayerControl(player))
+            {
+                return CustomRPC.RoleId.EvilHacker;
+            }
             //ロールチェック
 
             }

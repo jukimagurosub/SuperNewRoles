@@ -90,6 +90,7 @@ namespace SuperNewRoles.CustomRPC
         MadJester,
         MadStuntMan,
         MadHawk,
+        EvilHacker,
         //RoleId
     }
 
@@ -138,6 +139,7 @@ namespace SuperNewRoles.CustomRPC
         SetCustomSabotage,
         UseStuntmanCount,
         UseMadStuntmanCount,
+        EvilHackerCreatesMadmate,
     }
     public static class RPCProcedure
     {
@@ -258,7 +260,7 @@ namespace SuperNewRoles.CustomRPC
         public static void uncheckedSetTasks(byte playerId, byte[] taskTypeIds)
         {
             var player = ModHelpers.playerById(playerId);
-            player.clearAllTasks();
+ 
 
             GameData.Instance.SetTasks(playerId, taskTypeIds);
         }
@@ -612,6 +614,45 @@ namespace SuperNewRoles.CustomRPC
         {
             OnGameEndPatch.EndData = (CustomGameOverReason)Cond;
         }
+        public static void EvilHackerCreatesMadmate(byte targetId)
+        {
+            PlayerControl player = ModHelpers.playerById(targetId);
+            if (!RoleClass.EvilHacker.canCreateMadmateFromJackal && player.isRole(RoleId.Jackal))
+            {
+                RoleClass.EvilHacker.fakeMadmate = player;
+            }
+            else
+            {
+                // Jackalバグ対応
+                List<PlayerControl> tmpFormerJackals = new List<PlayerControl>(RoleClass.Jackal.formerJackals);
+
+                // タスクがないプレイヤーがMadmateになった場合はショートタスクを必要数割り当てる
+               // if (ModHelpers.hasFakeTasks(player))
+                {
+                    if (CreatedMadmate.hasTasks)
+                    {
+                        ModHelpers.clearAllTasks(player);
+                        player.generateAndAssignTasks(0, CreatedMadmate.numTasks, 0);
+                    }
+                }
+
+                player.RemoveInfected();
+                erasePlayerRoles(player.PlayerId, true, false);
+
+                // Jackalバグ対応
+                RoleClass.Jackal.formerJackals = tmpFormerJackals;
+
+                player.addModifier(ModifierType.CreatedMadmate);
+            }
+            RoleClass.EvilHacker.canCreateMadmate = false;
+            return;
+        }
+        public static void erasePlayerRoles(byte playerId, bool ignoreLovers = false, bool clearNeutralTasks = true)
+        {
+            PlayerControl player = ModHelpers.playerById(playerId);
+            if (player == null) return;
+
+        }
         [HarmonyPatch(typeof(InnerNetClient), nameof(InnerNetClient.StartEndGame))]
         class STARTENDGAME
         {
@@ -780,6 +821,9 @@ namespace SuperNewRoles.CustomRPC
                         break;
                     case (byte)CustomRPC.SetCustomSabotage:
                         SabotageManager.SetSabotage(ModHelpers.playerById(reader.ReadByte()),(SabotageManager.CustomSabotage)reader.ReadByte(),reader.ReadBoolean());
+                        break;
+                    case (byte)CustomRPC.EvilHackerCreatesMadmate:
+                        RPCProcedure.EvilHackerCreatesMadmate(reader.ReadByte());
                         break;
                 }
             }

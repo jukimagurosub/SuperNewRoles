@@ -105,6 +105,7 @@ namespace SuperNewRoles.Roles
             MadStuntMan.ClearAndReload();
             MadHawk.ClearAndReload();
             MadJester.ClearAndReload();
+            EvilHacker.ClearAndReload();
             //ロールクリア
             Quarreled.ClearAndReload();
             Lovers.ClearAndReload();
@@ -285,9 +286,11 @@ namespace SuperNewRoles.Roles
         public static class Jackal
         {
             public static List<PlayerControl> JackalPlayer;
+            public static PlayerControl jackal;
             public static List<PlayerControl> SidekickPlayer;
             public static List<PlayerControl> FakeSidekickPlayer;
             public static Color32 color = new Color32(0, 255, 255, byte.MaxValue);
+            public static List<PlayerControl> formerJackals = new List<PlayerControl>();
             public static float KillCoolDown;
             public static bool IsUseVent;
             public static bool IsUseSabo;
@@ -303,7 +306,9 @@ namespace SuperNewRoles.Roles
             }
             public static void clearAndReload()
             {
+                if (!formerJackals.Any(x => x.PlayerId == jackal.PlayerId)) formerJackals.Add(jackal);
                 JackalPlayer = new List<PlayerControl>();
+                jackal = null;
                 SidekickPlayer = new List<PlayerControl>();
                 FakeSidekickPlayer = new List<PlayerControl>();
                 KillCoolDown = CustomOptions.JackalKillCoolDown.getFloat();
@@ -1436,6 +1441,46 @@ namespace SuperNewRoles.Roles
                 IsUseVent = CustomOptions.MadJesterIsUseVent.getBool();
                 IsImpostorLight = CustomOptions.MadJesterIsImpostorLight.getBool();
                 IsMadJesterTaskClearWin = CustomOptions.IsMadJesterTaskClearWin.getBool();
+            }
+        }
+        public static class EvilHacker
+        {
+            public static List<PlayerControl> EvilHackerPlayer;
+            public static PlayerControl evilHacker;
+            public static Color32 color = ImpostorRed;
+            public static bool canHasBetterAdmin { get { return CustomOptions.evilHackerCanHasBetterAdmin.getBool(); } }
+            public static bool canCreateMadmate = false;
+          //  public static bool canCreateMadmateFromFox { get { return CustomOptions.evilHackerCanCreateMadmateFromFox.getBool(); } }
+            public static bool canCreateMadmateFromJackal { get { return CustomOptions.evilHackerCanCreateMadmateFromJackal.getBool(); } }
+            public static PlayerControl fakeMadmate;
+            public static PlayerControl currentTarget;
+            private static Sprite buttonSprite;
+            private static Sprite madmateButtonSprite;
+
+            public static Sprite getButtonSprite()
+            {
+                if (buttonSprite) return buttonSprite;
+                // buttonSprite = DestroyableSingleton<TranslationController>.Instance.GetImage(ImageNames.AirshipAdminButton);
+                // return buttonSprite;
+                byte mapId = PlayerControl.GameOptions.MapId;
+                UseButtonSettings button = HudManager.Instance.UseButton.fastUseSettings[ImageNames.PolusAdminButton]; // Polus
+                if (mapId == 0 || mapId == 3) button = HudManager.Instance.UseButton.fastUseSettings[ImageNames.AdminMapButton]; // Skeld || Dleks
+                else if (mapId == 1) button = HudManager.Instance.UseButton.fastUseSettings[ImageNames.MIRAAdminButton]; // Mira HQ
+                else if (mapId == 4) button = HudManager.Instance.UseButton.fastUseSettings[ImageNames.AirshipAdminButton]; // Airship
+               // else if (mapId == 5) button = ModHelpers.loadSpriteFromResources("SuperNewRoles.Resources.AdminButton.png", 115f);//agartha
+                buttonSprite = button.Image;
+                return buttonSprite;
+            }
+            public static Sprite getMadmateButtonSprite()
+            {
+                if (madmateButtonSprite) return madmateButtonSprite;
+                madmateButtonSprite = ModHelpers.loadSpriteFromResources("SuperNewRoles.Resources.JackalSidekickButton.png", 115f);
+                return madmateButtonSprite;
+            }
+            public static void ClearAndReload()
+            {
+                evilHacker = null;
+                EvilHackerPlayer = new List<PlayerControl>();
             }
         }
         //新ロールクラス

@@ -381,6 +381,22 @@ namespace SuperNewRoles.CustomOption
         public static CustomOption MadJesterIsImpostorLight;
         public static CustomOption IsMadJesterTaskClearWin;
 
+        public static CustomRoleOption EvilHackerOption;
+        public static CustomOption EvilHackerPlayerCount;
+        public static CustomOption evilHackerCanHasBetterAdmin;
+        public static CustomOption evilHackerCanCreateMadmate;
+     // public static CustomOption evilHackerCanCreateMadmateFromFox;
+        public static CustomOption evilHackerCanCreateMadmateFromJackal;
+        public static CustomOption createdMadmateCanDieToSheriff;
+        public static CustomOption createdMadmateCanEnterVents;
+        public static CustomOption createdMadmateHasImpostorVision;
+        public static CustomOption createdMadmateCanSabotage;
+        public static CustomOption createdMadmateCanFixComm;
+        public static CustomOption createdMadmateAbility;
+        public static CustomOption createdMadmateNumTasks;
+        public static CustomOption createdMadmateExileCrewmate;
+        public static CustomOption activateRoles;
+
         public static CustomOption QuarreledOption;
         public static CustomOption QuarreledTeamCount;
         public static CustomOption QuarreledOnlyCrewMate;
@@ -794,6 +810,21 @@ namespace SuperNewRoles.CustomOption
             MadJesterIsUseVent = CustomOption.Create(331, true, CustomOptionType.Crewmate, "MadMateUseVentSetting", false, MadJesterOption);
             MadJesterIsImpostorLight = CustomOption.Create(326, true, CustomOptionType.Crewmate, "MadMateImpostorLightSetting", false, MadJesterOption);
             IsMadJesterTaskClearWin = CustomOption.Create(327, true, CustomOptionType.Crewmate, "JesterIsWinClearTaskSetting", false, MadJesterOption);
+
+            EvilHackerOption = new CustomRoleOption(328, false, CustomOptionType.Impostor, "EvilHackerName", RoleClass.EvilHacker.color, 1);
+            EvilHackerPlayerCount = CustomOption.Create(329, true, CustomOptionType.Impostor, "SettingPlayerCountName", CrewPlayers[0], CrewPlayers[1], CrewPlayers[2], CrewPlayers[3], EvilHackerOption);
+            evilHackerCanHasBetterAdmin = CustomOption.Create(330, true, CustomOptionType.Impostor, "evilHackerCanHasBetterAdmin", false, EvilHackerOption);
+            evilHackerCanCreateMadmate = CustomOption.Create(331, true, CustomOptionType.Impostor, "evilHackerCanCreateMadmate", false, EvilHackerOption);
+            createdMadmateCanDieToSheriff = CustomOption.Create(332, true, CustomOptionType.Impostor, "createdMadmateCanDieToSheriff", false, evilHackerCanCreateMadmate);
+            createdMadmateCanEnterVents = CustomOption.Create(333, true, CustomOptionType.Impostor, "createdMadmateCanEnterVents", false, evilHackerCanCreateMadmate);
+            //evilHackerCanCreateMadmateFromFox = CustomOption.Create(334, true, CustomOptionType.Impostor, "evilHackerCanCreateMadmateFromFox", false, evilHackerCanCreateMadmate);
+            evilHackerCanCreateMadmateFromJackal = CustomOption.Create(335, true, CustomOptionType.Impostor, "evilHackerCanCreateMadmateFromJackal", false, evilHackerCanCreateMadmate);
+            createdMadmateHasImpostorVision = CustomOption.Create(336, true, CustomOptionType.Impostor, "createdMadmateHasImpostorVision", false, evilHackerCanCreateMadmate);
+            createdMadmateCanSabotage = CustomOption.Create(337, true, CustomOptionType.Impostor, "createdMadmateCanSabotage", false, evilHackerCanCreateMadmate);
+            createdMadmateCanFixComm = CustomOption.Create(338, true, CustomOptionType.Impostor, "createdMadmateCanFixComm", true, evilHackerCanCreateMadmate);
+            createdMadmateAbility = CustomOption.Create(339, true, CustomOptionType.Impostor, "madmateAbility", new string[] { "madmateNone", "madmateFanatic" }, evilHackerCanCreateMadmate);
+            createdMadmateNumTasks = CustomOption.Create(340, true, CustomOptionType.Impostor, "createdMadmateNumTasks", 4f, 1f, 20f, 1f, createdMadmateAbility);
+            createdMadmateExileCrewmate = CustomOption.Create(341, true, CustomOptionType.Impostor, "createdMadmateExileCrewmate", false, evilHackerCanCreateMadmate);
 
             QuarreledOption = CustomOption.Create(122, false, CustomOptionType.Neutral, cs(RoleClass.Quarreled.color, "QuarreledName"), false, null, isHeader: true);
             QuarreledTeamCount = CustomOption.Create(124, false, CustomOptionType.Crewmate, "QuarreledTeamCountSetting", QuarreledPlayers[0], QuarreledPlayers[1], QuarreledPlayers[2], QuarreledPlayers[3], QuarreledOption);

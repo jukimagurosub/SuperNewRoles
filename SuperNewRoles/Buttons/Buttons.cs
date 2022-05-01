@@ -42,9 +42,11 @@ namespace SuperNewRoles.Buttons
         public static CustomButton trueloverLoveButton;
         public static CustomButton ImpostorSidekickButton;
         public static CustomButton SideKillerSidekickButton;
+        public static CustomButton EvilHackerButton;
+        public static CustomButton EvilHackerCreatesMadmateButton;
 
         public static TMPro.TMP_Text sheriffNumShotsText;
-
+        public static TMPro.TMP_Text hackerAdminTableChargesText;
         public static void setCustomButtonCooldowns()
         {
             Sheriff.ResetKillCoolDown();
@@ -90,6 +92,7 @@ namespace SuperNewRoles.Buttons
 
             trueloverLoveButton.buttonText = ModTranslation.getString("trueloverloveButtonName");
             trueloverLoveButton.showButtonText = true;
+
 
             MagazinerGetButton = new CustomButton(
                   () =>
@@ -737,6 +740,59 @@ namespace SuperNewRoles.Buttons
 
             SideKillerSidekickButton.buttonText = ModTranslation.getString("SidekickName");
             SideKillerSidekickButton.showButtonText = true;
+
+                EvilHackerButton = new CustomButton(
+                () => {
+                    PlayerControl.LocalPlayer.NetTransform.Halt();
+                    Action<MapBehaviour> tmpAction = (MapBehaviour m) => { m.ShowCountOverlay(); };
+                    DestroyableSingleton<HudManager>.Instance.ShowMap(tmpAction);
+                    if (PlayerControl.LocalPlayer.AmOwner)
+                    {
+                        PlayerControl.LocalPlayer.MyPhysics.inputHandler.enabled = true;
+                        ConsoleJoystick.SetMode_Task();
+                    }
+                },
+                () =>
+                {
+                    return RoleClass.EvilHacker.EvilHackerPlayer != null &&
+                     RoleClass.EvilHacker.evilHacker == PlayerControl.LocalPlayer &&
+                      PlayerControl.LocalPlayer.isAlive();
+                },
+                () => { return PlayerControl.LocalPlayer.CanMove; },
+                () => {},
+                RoleClass.EvilHacker.getButtonSprite(),
+                new Vector3(-1.8f, -0.06f, 0),
+                __instance,
+				__instance.KillButton,
+				KeyCode.F,
+                50
+            );
+
+                EvilHackerCreatesMadmateButton = new CustomButton(
+                () => 
+                {
+                   // MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.EvilHackerCreatesMadmate, Hazel.SendOption.Reliable, -1);
+                 //   writer.Write(RoleClass.EvilHacker.currentTarget.PlayerId);
+                 //   AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.EvilHackerCreatesMadmate(RoleClass.EvilHacker.currentTarget.PlayerId);
+                },
+                () =>
+                {
+                    return RoleClass.EvilHacker.evilHacker != null &&
+                      RoleClass.EvilHacker.evilHacker == PlayerControl.LocalPlayer &&
+                      RoleClass.EvilHacker.canCreateMadmate &&
+                      PlayerControl.LocalPlayer.isAlive();
+                },
+                () => { return RoleClass.EvilHacker.currentTarget && PlayerControl.LocalPlayer.CanMove; },
+                () => {},
+                RoleClass.EvilHacker.getMadmateButtonSprite(),
+                new Vector3(-2.7f, -0.06f, 0),
+                __instance,
+				__instance.KillButton,
+                KeyCode.T,
+                51
+            );
+            EvilHackerCreatesMadmateButton.buttonText = ModTranslation.getString("MadmateText");
 
             RoleClass.SerialKiller.SuicideKillText = GameObject.Instantiate(HudManager.Instance.KillButton.cooldownTimerText, HudManager.Instance.KillButton.cooldownTimerText.transform.parent);
             RoleClass.SerialKiller.SuicideKillText.text = "";
